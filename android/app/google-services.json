@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "894077278430",
+    "firebase_url": "https://react-native-notif-poc.firebaseio.com",
+    "project_id": "react-native-notif-poc",
+    "storage_bucket": "react-native-notif-poc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:894077278430:android:bbaad01e9593332c",
+        "android_client_info": {
+          "package_name": "com.rnnotifpoc"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "894077278430-9pdc6a3ofddtk5o2sti2omqk563btd54.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCTGz0tBZf6V0P8ZZtYI76hJ6QjIv1Q5_I"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
