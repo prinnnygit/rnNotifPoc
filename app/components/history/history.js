@@ -41,20 +41,27 @@ export class History extends Component {
             loading: false,
             startDate: '',
             minDatePicker: moment().subtract(3, 'months').format('YYYY-MM-DD'),
-            maxDatePicker: moment().format('YYYY-MM-DD'),
-            transactionData: transactionData,
-            searchData: []
+            maxDatePicker: moment().format('YYYY-MM-DD')
         }
     }
 
-    onStartDateChanged(date) {
-        var dataClone = [...this.state.transactionData];
-        var filteredData = dataClone.filter((item) => moment(item.transactionDate).isAfter(moment(date)));
-        this.setState({ startDate: date, searchData: filteredData });
+    getSearchResult(){
+        if(this.state.startDate === ''){
+            return [];
+        }
+        else {
+            return transactionData.filter((item) => {
+                var itemDateSplit = item.transactionDate.split('-');
+                var itemDate = new Date(itemDateSplit[0], itemDateSplit[1], itemDateSplit[2]);
+                var startDateSplit = this.state.startDate.split('-');
+                var startDate = new Date(startDateSplit[0], startDateSplit[1], startDateSplit[2]);
+                return itemDate >= startDate;
+            });
+        }
     }
 
-    renderSearchResultHeader() {
-        if (this.state.searchData.length > 0) {
+    renderSearchResultHeader(searchResult) {
+        if (searchResult.length > 0) {
             return (
                 <View style={historyStyles.headerContainer}>
                     <View style={historyStyles.headerRow}>
@@ -79,7 +86,8 @@ export class History extends Component {
     }
 
     render() {
-        const searchResultHeader = this.renderSearchResultHeader();
+        var searchResult = this.getSearchResult();
+        var searchResultHeader = this.renderSearchResultHeader(searchResult);
         return (
             <View style={appStyles.pageFlexContainerPure}>
                 <View style={historyStyles.filterContainer}>
@@ -106,14 +114,14 @@ export class History extends Component {
                                 backgroundColor: '#ffffff',
                             }
                         }}
-                        onDateChange={(date) => this.onStartDateChanged(date)}
+                        onDateChange={(date) => this.setState({ startDate : date})}
                     />
                 </View>
                 {searchResultHeader}
                 <ScrollView style={historyStyles.listContainer}>
                     <FlatList
-                        data={this.state.searchData}
-                        renderItem={(item) => <TransactionRow key={item.id} transaction={item} />}
+                        data={searchResult}
+                        renderItem={(item) => <TransactionRow transaction={item} />}
                     >
                     </FlatList>
                 </ScrollView>
