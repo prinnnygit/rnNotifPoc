@@ -85,7 +85,7 @@ export class Register extends Component {
 
     render() {
         return (
-            <ScrollView style={appStyles.pageContainer}>
+            <ScrollView style={appStyles.pageContainer} keyboardShouldPersistTaps="handled">
                 <View style={appStyles.inputContainer}>
                     <Text>Username</Text>
                     <TextInput
