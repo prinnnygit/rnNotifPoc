@@ -16,6 +16,7 @@ import {
 
 import { NavigationActions } from 'react-navigation';
 
+import firebase from 'firebase';
 import PropTypes from 'prop-types';
 
 import appStyles from '../../app.style';
@@ -33,23 +34,34 @@ export class Login extends Component {
         super();
         this.state = {
             loading: false,
-            username: 'ryan',
-            password: 'anything'
+            email: 'adhityaryansan@gmail.com',
+            password: 'anything',
+            error: ''
         }
     }
 
     signIn() {
-        userStore.dispatch(userLogin(this.state.username));
+        this.setState({ error: '', loading: true });
+        firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
+            .then((response) => {
+                this.setState({ loading: false });
+                Alert.alert("Success", JSON.stringify(response));
+            })
+            .catch((error) => {
+                this.setState({ loading: false });
+                Alert.alert("Failed", JSON.stringify(error));
+            });
+        // userStore.dispatch(userLogin(this.state.username));
 
-        const resetAction = NavigationActions.reset({
-            index: 0,
-            actions: [
-                NavigationActions.navigate({
-                    routeName: "Home"
-                })
-            ]
-        });
-        this.props.navigation.dispatch(resetAction);
+        // const resetAction = NavigationActions.reset({
+        //     index: 0,
+        //     actions: [
+        //         NavigationActions.navigate({
+        //             routeName: "Home"
+        //         })
+        //     ]
+        // });
+        // this.props.navigation.dispatch(resetAction);
     }
 
     register() {
@@ -60,11 +72,11 @@ export class Login extends Component {
         return (
             <View style={appStyles.pageContainer}>
                 <View style={appStyles.inputContainer}>
-                    <Text>Username</Text>
+                    <Text>Email Address</Text>
                     <TextInput
                         style={appStyles.input}
-                        onChangeText={(text) => this.setState({ username: text })}
-                        value={this.state.username}
+                        onChangeText={(text) => this.setState({ email: text })}
+                        value={this.state.email}
                         underlineColorAndroid="transparent"
                     />
                 </View>

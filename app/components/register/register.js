@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types';
 import DatePicker from 'react-native-datepicker';
 import moment from 'moment';
+import firebase from 'firebase';
 
 import {
     AppRegistry,
@@ -27,14 +28,14 @@ import registerStyle from './register.style';
 var PushNotification = require('react-native-push-notification');
 
 PushNotification.configure({
-    onRegister: function(token) {
-        console.log( 'TOKEN:', token );
+    onRegister: function (token) {
+        console.log('TOKEN:', token);
     },
-    onNotification: function(notification) {
-        console.log( 'NOTIFICATION:', notification );
+    onNotification: function (notification) {
+        console.log('NOTIFICATION:', notification);
 
         // process the notification
-        
+
         notification.finish(PushNotificationIOS.FetchResult.NoData);
     },
     senderID: "YOUR GCM SENDER ID",
@@ -58,8 +59,8 @@ export class Register extends Component {
         super();
         this.state = {
             loading: false,
-            username: '',
-            password: '',
+            email: 'adhityaryansan@gmail.com',
+            password: 'anything',
             firstName: '',
             lastName: '',
             dateOfBirth: '',
@@ -67,32 +68,36 @@ export class Register extends Component {
             maxDatePicker: moment().format('YYYY-MM-DD'),
             gender: 'Male',
             mobileNumber: '',
-            emailAddress: '',
             address: ''
         }
     }
 
     createNewAccount() {
-        PushNotification.localNotification({
-            title: "Verify your account",
-            message: "Verify your registration by clicking here"
-        });
-
-        Alert.alert("Success", "Account created", [
-            { text: 'OK', onPress: () => this.props.navigation.goBack() },
-        ], { cancelable: false })
+        // PushNotification.localNotification({
+        //     title: "Verify your account",
+        //     message: "Verify your registration by clicking here"
+        // });
+        firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
+            .then((response) => {
+                Alert.alert("Account Created", JSON.stringify(response), [
+                    { text: 'OK', onPress: () => this.props.navigation.goBack() },
+                ], { cancelable: false })
+            })
+            .catch((error) => {
+                this.setState({ loading: false });
+                Alert.alert("Failed", JSON.stringify(error));
+            });
     }
 
     render() {
         return (
             <ScrollView style={appStyles.pageContainer} keyboardShouldPersistTaps="handled">
                 <View style={appStyles.inputContainer}>
-                    <Text>Username</Text>
+                    <Text>Email Address</Text>
                     <TextInput
                         style={appStyles.input}
-                        onpress={() => this.focus()}
-                        onChangeText={(text) => this.setState({ username: text })}
-                        value={this.state.username}
+                        onChangeText={(text) => this.setState({ email: text })}
+                        value={this.state.email}
                         underlineColorAndroid="transparent"
                     />
                 </View>
@@ -173,15 +178,6 @@ export class Register extends Component {
                         placeholder="+62xxx..."
                         onChangeText={(text) => this.setState({ mobileNumber: text })}
                         value={this.state.mobileNumber}
-                        underlineColorAndroid="transparent"
-                    />
-                </View>
-                <View style={appStyles.inputContainer}>
-                    <Text>Email Address</Text>
-                    <TextInput
-                        style={appStyles.input}
-                        onChangeText={(text) => this.setState({ emailAddress: text })}
-                        value={this.state.emailAddress}
                         underlineColorAndroid="transparent"
                     />
                 </View>
